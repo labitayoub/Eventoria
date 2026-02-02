@@ -6,7 +6,7 @@ Elle permet aux organisations (centres de formation, entreprises, associations, 
 
 L’objectif principal est de remplacer une gestion manuelle (Excel, emails, formulaires simples) par une **solution web professionnelle, scalable et industrialisée**.
 
----
+----------------------------
 
 ## 👨‍💻 Rôle dans le projet
 🔹 **Développeur Full-Stack (Back-end & Front-end)**  
@@ -63,7 +63,7 @@ J’ai assuré **l’intégralité du développement du projet** :
   - Build
   - Publication des images Docker
 
----
+----------------------------
 
 ## 📂 Organisation du projet
 - Architecture modulaire et maintenable

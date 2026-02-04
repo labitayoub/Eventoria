@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="xxx" version="22.1.16" type="device">
+  <diagram name="Class Diagram - Eventoria" id="class-diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- User Class -->
+        <mxCell id="user-class" value="User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="200" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="user-attrs" value="- id: String&#xa;- email: String&#xa;- password: String&#xa;- firstName: String&#xa;- lastName: String&#xa;- role: UserRole&#xa;- createdAt: Date&#xa;- updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="user-class">
+          <mxGeometry y="26" width="200" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="user-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="user-class">
+          <mxGeometry y="150" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="user-methods" value="+ login(): void&#xa;+ logout(): void&#xa;+ updateProfile(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="user-class">
+          <mxGeometry y="158" width="200" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Event Class -->
+        <mxCell id="event-class" value="Event" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="50" width="200" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="event-attrs" value="- id: String&#xa;- title: String&#xa;- description: String&#xa;- dateTime: Date&#xa;- location: String&#xa;- maxCapacity: Number&#xa;- currentReservations: Number&#xa;- status: EventStatus&#xa;- createdBy: String&#xa;- createdAt: Date&#xa;- updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="event-class">
+          <mxGeometry y="26" width="200" height="164" as="geometry" />
+        </mxCell>
+        <mxCell id="event-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="event-class">
+          <mxGeometry y="190" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="event-methods" value="+ publish(): void&#xa;+ cancel(): void&#xa;+ update(): void&#xa;+ getRemainingPlaces(): Number&#xa;+ isFull(): Boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="event-class">
+          <mxGeometry y="198" width="200" height="82" as="geometry" />
+        </mxCell>
+
+        <!-- Reservation Class -->
+        <mxCell id="reservation-class" value="Reservation" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-attrs" value="- id: String&#xa;- userId: String&#xa;- eventId: String&#xa;- status: ReservationStatus&#xa;- createdAt: Date&#xa;- updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="reservation-class">
+          <mxGeometry y="26" width="200" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="reservation-class">
+          <mxGeometry y="120" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-methods" value="+ confirm(): void&#xa;+ refuse(): void&#xa;+ cancel(): void&#xa;+ generateTicket(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="reservation-class">
+          <mxGeometry y="128" width="200" height="72" as="geometry" />
+        </mxCell>
+
+        <!-- Ticket Class -->
+        <mxCell id="ticket-class" value="Ticket" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="950" y="50" width="180" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ticket-attrs" value="- id: String&#xa;- reservationId: String&#xa;- qrCode: String&#xa;- generatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ticket-class">
+          <mxGeometry y="26" width="180" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="ticket-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="ticket-class">
+          <mxGeometry y="90" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="ticket-methods" value="+ generatePDF(): void&#xa;+ download(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ticket-class">
+          <mxGeometry y="98" width="180" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Enumerations -->
+        <mxCell id="user-role-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;UserRole" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="user-role-values" value="ADMIN&#xa;PARTICIPANT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="user-role-enum">
+          <mxGeometry y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="event-status-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;EventStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="350" y="380" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="event-status-values" value="DRAFT&#xa;PUBLISHED&#xa;CANCELED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="event-status-enum">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reservation-status-enum" value="&lt;&lt;enumeration&gt;&gt;&#xa;ReservationStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="650" y="380" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-status-values" value="PENDING&#xa;CONFIRMED&#xa;REFUSED&#xa;CANCELED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="reservation-status-enum">
+          <mxGeometry y="40" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Relations -->
+        <!-- User creates Event -->
+        <mxCell id="user-event-relation" value="" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="user-class" target="event-class">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="user-event-label" value="creates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-event-relation">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-event-card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-event-relation">
+          <mxGeometry x="-0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-event-card2" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-event-relation">
+          <mxGeometry x="0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- User makes Reservation -->
+        <mxCell id="user-reservation-relation" value="" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="user-class" target="reservation-class">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="user-reservation-label" value="makes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-reservation-relation">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-reservation-card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-reservation-relation">
+          <mxGeometry x="-0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="user-reservation-card2" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="user-reservation-relation">
+          <mxGeometry x="0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Event has Reservation -->
+        <mxCell id="event-reservation-relation" value="" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="event-class" target="reservation-class">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="event-reservation-label" value="has" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="event-reservation-relation">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="event-reservation-card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="event-reservation-relation">
+          <mxGeometry x="-0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="event-reservation-card2" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="event-reservation-relation">
+          <mxGeometry x="0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Reservation generates Ticket -->
+        <mxCell id="reservation-ticket-relation" value="" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="reservation-class" target="ticket-class">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="reservation-ticket-label" value="generates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="reservation-ticket-relation">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="reservation-ticket-card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="reservation-ticket-relation">
+          <mxGeometry x="-0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="reservation-ticket-card2" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="reservation-ticket-relation">
+          <mxGeometry x="0.8" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Enum relations -->
+        <mxCell id="user-role-relation" value="" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;" edge="1" parent="1" source="user-class" target="user-role-enum">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="event-status-relation" value="" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;" edge="1" parent="1" source="event-class" target="event-status-enum">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reservation-status-relation" value="" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;" edge="1" parent="1" source="reservation-class" target="reservation-status-enum">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

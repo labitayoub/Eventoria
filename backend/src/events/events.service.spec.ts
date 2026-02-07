@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { EventsService } from './events.service';
 import { Event, EventStatus } from './entities/event.entity';
 import { NotFoundException } from '@nestjs/common';
+import { CreateEventDto } from './dto/create-event.dto';
 
 const mockEventRepository = () => ({
   create: jest.fn(),
@@ -32,14 +33,35 @@ describe('EventsService', () => {
   });
 
   it('should create an event', async () => {
-    const dto = { title: 'Test', description: 'Desc' } as Event;
-    repository.create.mockReturnValue(dto);
-    repository.save.mockResolvedValue(dto);
+    const dto: CreateEventDto = {
+      title: 'Test',
+      description: 'Desc',
+      location: 'Paris',
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+      capacity: 10,
+      status: EventStatus.DRAFT,
+    };
+    const savedEvent: Event = {
+      id: '1',
+      title: dto.title,
+      description: dto.description,
+      location: dto.location,
+      startDate: new Date(dto.startDate),
+      endDate: new Date(dto.endDate),
+      capacity: dto.capacity,
+      reservedSeats: 0,
+      status: dto.status ?? EventStatus.DRAFT,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    repository.create.mockReturnValue(savedEvent);
+    repository.save.mockResolvedValue(savedEvent);
 
-    const result = await service.create(dto as any);
-    expect(result).toBe(dto);
+    const result = await service.create(dto);
+    expect(result).toBe(savedEvent);
     expect(repository.create).toHaveBeenCalledWith(dto);
-    expect(repository.save).toHaveBeenCalledWith(dto);
+    expect(repository.save).toHaveBeenCalledWith(savedEvent);
   });
 
   it('should return published events', async () => {

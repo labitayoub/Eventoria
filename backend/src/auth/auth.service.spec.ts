@@ -3,13 +3,21 @@ import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User, UserRole } from '../users/entities/user.entity';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let mockUserRepository: any;
-  let mockJwtService: any;
+  let mockUserRepository: {
+    findOne: jest.Mock;
+    create: jest.Mock;
+    save: jest.Mock;
+  };
+  let mockJwtService: {
+    sign: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockUserRepository = {
@@ -35,7 +43,7 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should register a new user', async () => {
-      const registerDto = {
+      const registerDto: RegisterDto = {
         email: 'test@test.com',
         password: 'password123',
         firstName: 'Test',
@@ -62,7 +70,7 @@ describe('AuthService', () => {
           password: 'password123',
           firstName: 'Test',
           lastName: 'User',
-        }),
+        } as RegisterDto),
       ).rejects.toThrow(ConflictException);
     });
   });
@@ -70,7 +78,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should login user with valid credentials', async () => {
       const hashedPassword = await bcrypt.hash('password123', 12);
-      const user = {
+      const user: User = {
         id: '1',
         email: 'test@test.com',
         password: hashedPassword,
@@ -84,7 +92,7 @@ describe('AuthService', () => {
       const result = await service.login({
         email: 'test@test.com',
         password: 'password123',
-      });
+      } as LoginDto);
 
       expect(result).toHaveProperty('user');
       expect(result).toHaveProperty('token');
@@ -94,7 +102,7 @@ describe('AuthService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.login({ email: 'test@test.com', password: 'wrong' }),
+        service.login({ email: 'test@test.com', password: 'wrong' } as LoginDto),
       ).rejects.toThrow(UnauthorizedException);
     });
   });

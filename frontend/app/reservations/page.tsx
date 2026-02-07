@@ -52,7 +52,8 @@ export default function MyReservationsPage() {
         responseType: 'blob',
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const blob = response.data instanceof Blob ? response.data : new Blob([response.data as BlobPart]);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `ticket-${id}.pdf`);

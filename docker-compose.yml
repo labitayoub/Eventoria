@@ -1,62 +1,52 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: eventoria_postgres
-    restart: unless-stopped
+    container_name: eventoria-postgres
     environment:
       POSTGRES_USER: eventoria_user
       POSTGRES_PASSWORD: eventoria_pass
       POSTGRES_DB: eventoria_db
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U eventoria_user -d eventoria_db"]
+      test: ["CMD-SHELL", "pg_isready -U eventoria_user"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - eventoria-network
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: eventoria_backend
-    restart: unless-stopped
-    ports:
-      - "3001:3001"
+    container_name: eventoria-backend
     environment:
       DATABASE_URL: postgresql://eventoria_user:eventoria_pass@postgres:5432/eventoria_db
-      JWT_SECRET: ${JWT_SECRET:-c63697be111f1b6dbb8033f9559c78cb38309d646a025f9fd0cc44b256fee234}
+      JWT_SECRET: your-super-secret-jwt-key
       JWT_EXPIRES_IN: 24h
       PORT: 3001
-      NODE_ENV: production
+    ports:
+      - "3001:3001"
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - eventoria-network
+    restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: eventoria_frontend
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
+    container_name: eventoria-frontend
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
     depends_on:
       - backend
-    networks:
-      - eventoria-network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
-
-networks:
-  eventoria-network:
-    driver: bridge

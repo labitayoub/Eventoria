@@ -21,6 +21,16 @@ export default function Navbar() {
             <Link href="/" className="text-xl font-bold text-blue-600">
               Eventoria
             </Link>
+            <div className="ml-10 flex space-x-4">
+              <Link href="/events" className="text-gray-700 hover:text-blue-600">
+                Événements
+              </Link>
+              {user && (
+                <Link href="/reservations" className="text-gray-700 hover:text-blue-600">
+                  Mes réservations
+                </Link>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -30,12 +40,20 @@ export default function Navbar() {
                   {user.firstName} {user.lastName}
                 </span>
                 {user.role === 'admin' && (
-                  <Link
-                    href="/admin"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    Admin
-                  </Link>
+                  <div className="flex gap-2">
+                    <Link
+                      href="/admin/events"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Événements
+                    </Link>
+                    <Link
+                      href="/admin/reservations"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Réservations
+                    </Link>
+                  </div>
                 )}
                 <button
                   onClick={handleLogout}

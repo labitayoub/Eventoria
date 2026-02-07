@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, StreamableFile, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  StreamableFile,
+  Res,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
@@ -14,7 +25,10 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @Post()
-  create(@GetUser() user: User, @Body() createReservationDto: CreateReservationDto) {
+  create(
+    @GetUser() user: User,
+    @Body() createReservationDto: CreateReservationDto,
+  ) {
     return this.reservationsService.create(user.id, createReservationDto);
   }
 
@@ -88,7 +102,10 @@ export class ReservationsController {
     @Param('id') id: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const pdfBuffer = await this.reservationsService.generateTicketPdf(id, user);
+    const pdfBuffer = await this.reservationsService.generateTicketPdf(
+      id,
+      user,
+    );
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="ticket-${id}.pdf"`,

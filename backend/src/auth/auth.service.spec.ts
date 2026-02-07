@@ -102,7 +102,10 @@ describe('AuthService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.login({ email: 'test@test.com', password: 'wrong' } as LoginDto),
+        service.login({
+          email: 'test@test.com',
+          password: 'wrong',
+        } as LoginDto),
       ).rejects.toThrow(UnauthorizedException);
     });
   });

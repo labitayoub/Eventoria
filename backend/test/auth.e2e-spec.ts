@@ -3,6 +3,14 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+interface AuthResponse {
+  user: {
+    email: string;
+    [key: string]: unknown;
+  };
+  token: string;
+}
+
 describe('Auth (e2e)', () => {
   let app: INestApplication;
 
@@ -34,7 +42,7 @@ describe('Auth (e2e)', () => {
         .expect((res) => {
           expect(res.body).toHaveProperty('user');
           expect(res.body).toHaveProperty('token');
-          expect(res.body.user.email).toBeDefined();
+          expect((res.body as AuthResponse).user.email).toBeDefined();
         });
     });
 
@@ -54,15 +62,13 @@ describe('Auth (e2e)', () => {
   describe('/auth/login (POST)', () => {
     it('should login with valid credentials', async () => {
       const email = `test${Date.now()}@test.com`;
-      
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email,
-          password: 'password123',
-          firstName: 'Test',
-          lastName: 'User',
-        });
+
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email,
+        password: 'password123',
+        firstName: 'Test',
+        lastName: 'User',
+      });
 
       return request(app.getHttpServer())
         .post('/auth/login')
@@ -92,21 +98,19 @@ describe('Auth (e2e)', () => {
           lastName: 'User',
         });
 
-      const token = registerRes.body.token;
+      const token = (registerRes.body as AuthResponse).token;
 
       return request(app.getHttpServer())
         .get('/auth/profile')
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect((res) => {
-          expect(res.body.email).toBeDefined();
+          expect((res.body as { email: string }).email).toBeDefined();
         });
     });
 
     it('should fail without token', () => {
-      return request(app.getHttpServer())
-        .get('/auth/profile')
-        .expect(401);
+      return request(app.getHttpServer()).get('/auth/profile').expect(401);
     });
   });
 });

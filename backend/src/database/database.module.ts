@@ -10,13 +10,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => {
         const isTest = configService.get('NODE_ENV') === 'test';
         return {
-        type: 'postgres',
-        url: configService.get('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: configService.get('NODE_ENV') !== 'production',
-        dropSchema: isTest,
-        logging: configService.get('NODE_ENV') === 'development',
-      };
+          type: 'postgres',
+          url: configService.get('DATABASE_URL'),
+          autoLoadEntities: true,
+          synchronize: configService.get('NODE_ENV') !== 'production',
+          dropSchema: isTest,
+          logging: configService.get('NODE_ENV') === 'development',
+        };
       },
     }),
   ],

@@ -23,7 +23,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@GetUser() user: User) {
-    const { password: _password, ...result } = user;
+    const { password, ...result } = user;
     return result;
   }
 }

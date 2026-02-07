@@ -76,7 +76,10 @@ describe('EventsService', () => {
   it('should publish an event', async () => {
     const event = { id: '1', status: EventStatus.DRAFT } as Event;
     repository.findOne.mockResolvedValue(event);
-    repository.save.mockResolvedValue({ ...event, status: EventStatus.PUBLISHED });
+    repository.save.mockResolvedValue({
+      ...event,
+      status: EventStatus.PUBLISHED,
+    });
 
     const result = await service.publish('1');
     expect(result.status).toBe(EventStatus.PUBLISHED);
@@ -85,7 +88,10 @@ describe('EventsService', () => {
   it('should cancel an event', async () => {
     const event = { id: '1', status: EventStatus.PUBLISHED } as Event;
     repository.findOne.mockResolvedValue(event);
-    repository.save.mockResolvedValue({ ...event, status: EventStatus.CANCELLED });
+    repository.save.mockResolvedValue({
+      ...event,
+      status: EventStatus.CANCELLED,
+    });
 
     const result = await service.cancel('1');
     expect(result.status).toBe(EventStatus.CANCELLED);
@@ -101,6 +107,8 @@ describe('EventsService', () => {
 
   it('should throw if event not found', async () => {
     repository.findOne.mockResolvedValue(null);
-    await expect(service.findOne('missing')).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.findOne('missing')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
   });
 });

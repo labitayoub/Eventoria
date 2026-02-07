@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, MoreThan } from 'typeorm';
 import { Reservation, ReservationStatus } from './entities/reservation.entity';
@@ -15,7 +20,10 @@ export class ReservationsService {
     private eventRepository: Repository<Event>,
   ) {}
 
-  async create(userId: string, createReservationDto: CreateReservationDto): Promise<Reservation> {
+  async create(
+    userId: string,
+    createReservationDto: CreateReservationDto,
+  ): Promise<Reservation> {
     const event = await this.eventRepository.findOne({
       where: { id: createReservationDto.eventId },
     });
@@ -42,7 +50,9 @@ export class ReservationsService {
     });
 
     if (existingReservation) {
-      throw new BadRequestException('You already have a reservation for this event');
+      throw new BadRequestException(
+        'You already have a reservation for this event',
+      );
     }
 
     const reservation = this.reservationRepository.create({
@@ -94,7 +104,9 @@ export class ReservationsService {
     const reservation = await this.findOne(id);
 
     if (reservation.status !== ReservationStatus.PENDING) {
-      throw new BadRequestException('Only pending reservations can be confirmed');
+      throw new BadRequestException(
+        'Only pending reservations can be confirmed',
+      );
     }
 
     const event = await this.eventRepository.findOne({
@@ -130,7 +142,11 @@ export class ReservationsService {
     return await this.reservationRepository.save(reservation);
   }
 
-  async cancel(id: string, userId: string, isAdmin = false): Promise<Reservation> {
+  async cancel(
+    id: string,
+    userId: string,
+    isAdmin = false,
+  ): Promise<Reservation> {
     const reservation = await this.findOne(id);
 
     if (!isAdmin && reservation.userId !== userId) {
@@ -159,7 +175,9 @@ export class ReservationsService {
     const reservation = await this.findOne(id);
 
     if (reservation.status !== ReservationStatus.CONFIRMED) {
-      throw new BadRequestException('Ticket is only available for confirmed reservations');
+      throw new BadRequestException(
+        'Ticket is only available for confirmed reservations',
+      );
     }
 
     const isAdmin = user.role === UserRole.ADMIN;
@@ -190,7 +208,9 @@ export class ReservationsService {
     const escapePdfText = (text: string) =>
       text.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
 
-    const contentLines = lines.map((line) => `(${escapePdfText(line)}) Tj\nT*`).join('\n');
+    const contentLines = lines
+      .map((line) => `(${escapePdfText(line)}) Tj\nT*`)
+      .join('\n');
     const content = `BT\n/F1 12 Tf\n50 750 Td\n12 TL\n${contentLines}\nET`;
 
     const objects = [
@@ -231,8 +251,14 @@ export class ReservationsService {
     });
 
     const events = await this.eventRepository.find();
-    const totalCapacity = events.reduce((sum, event) => sum + event.capacity, 0);
-    const totalReserved = events.reduce((sum, event) => sum + event.reservedSeats, 0);
+    const totalCapacity = events.reduce(
+      (sum, event) => sum + event.capacity,
+      0,
+    );
+    const totalReserved = events.reduce(
+      (sum, event) => sum + event.reservedSeats,
+      0,
+    );
     const fillRate = totalCapacity > 0 ? totalReserved / totalCapacity : 0;
 
     const reservationsByStatusRaw = await this.reservationRepository
@@ -254,7 +280,10 @@ export class ReservationsService {
       upcomingEvents,
       fillRate,
       reservationsByStatus,
-      totalReservations: reservationsByStatusRaw.reduce((sum, item) => sum + Number(item.count), 0),
+      totalReservations: reservationsByStatusRaw.reduce(
+        (sum, item) => sum + Number(item.count),
+        0,
+      ),
     };
   }
 }

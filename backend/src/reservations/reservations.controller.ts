@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, StreamableFile, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -36,6 +37,20 @@ export class ReservationsController {
     return this.reservationsService.findByEvent(eventId);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('user/:userId')
+  findByUser(@Param('userId') userId: string) {
+    return this.reservationsService.findByUser(userId);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('stats')
+  getStats() {
+    return this.reservationsService.getAdminStats();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(id);
@@ -55,8 +70,29 @@ export class ReservationsController {
     return this.reservationsService.refuse(id);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Patch(':id/cancel')
+  cancelByAdmin(@GetUser() user: User, @Param('id') id: string) {
+    return this.reservationsService.cancel(id, user.id, true);
+  }
+
   @Delete(':id')
   cancel(@GetUser() user: User, @Param('id') id: string) {
     return this.reservationsService.cancel(id, user.id);
+  }
+
+  @Get(':id/ticket')
+  async downloadTicket(
+    @GetUser() user: User,
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const pdfBuffer = await this.reservationsService.generateTicketPdf(id, user);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="ticket-${id}.pdf"`,
+    });
+    return new StreamableFile(pdfBuffer);
   }
 }

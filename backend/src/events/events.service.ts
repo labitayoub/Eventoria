@@ -36,6 +36,16 @@ export class EventsService {
     return event;
   }
 
+  async findPublishedById(id: string): Promise<Event> {
+    const event = await this.eventRepository.findOne({
+      where: { id, status: EventStatus.PUBLISHED },
+    });
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+    return event;
+  }
+
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     const event = await this.findOne(id);
     Object.assign(event, updateEventDto);

@@ -17,7 +17,7 @@ export default function MyReservationsPage() {
 
   const fetchReservations = async () => {
     try {
-      const { data } = await api.get('/reservations/my-reservations');
+      const { data } = await api.get<Reservation[]>('/reservations/my-reservations');
       setReservations(data);
     } catch (error) {
       console.error('Error fetching reservations:', error);
@@ -34,6 +34,25 @@ export default function MyReservationsPage() {
       fetchReservations();
     } catch (error: any) {
       alert(error.response?.data?.message || 'Erreur lors de l\'annulation');
+    }
+  };
+
+  const handleDownloadTicket = async (id: string) => {
+    try {
+      const response = await api.get(`/reservations/${id}/ticket`, {
+        responseType: 'blob',
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `ticket-${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Erreur lors du téléchargement du ticket');
     }
   };
 
@@ -95,6 +114,14 @@ export default function MyReservationsPage() {
                       <span className={`inline-block px-3 py-1 rounded text-sm ${getStatusBadge(reservation.status)}`}>
                         {getStatusText(reservation.status)}
                       </span>
+                      {reservation.status === 'confirmed' && (
+                        <button
+                          onClick={() => handleDownloadTicket(reservation.id)}
+                          className="block w-full text-blue-600 hover:underline text-sm"
+                        >
+                          Télécharger le ticket PDF
+                        </button>
+                      )}
                       {(reservation.status === 'pending' || reservation.status === 'confirmed') && (
                         <button
                           onClick={() => handleCancel(reservation.id)}

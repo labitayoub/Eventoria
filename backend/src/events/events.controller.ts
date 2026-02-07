@@ -19,6 +19,8 @@ export class EventsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   findAll() {
     return this.eventsService.findAll();
   }
@@ -28,7 +30,14 @@ export class EventsController {
     return this.eventsService.findPublished();
   }
 
+  @Get('published/:id')
+  findPublishedById(@Param('id') id: string) {
+    return this.eventsService.findPublishedById(id);
+  }
+
   @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
   }

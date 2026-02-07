@@ -1,15 +1,22 @@
 import { Event } from '@/types/event';
-import api from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import EventCard from '@/components/events/EventCard';
 
-async function getPublishedEvents(): Promise<Event[]> {
-  const { data } = await api.get('/events/published');
-  return data;
+async function getEvents(): Promise<Event[]> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const response = await fetch(`${baseUrl}/events/published`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  return response.json();
 }
 
 export default async function EventsPage() {
-  const events = await getPublishedEvents();
+  const events = await getEvents();
 
   return (
     <>

@@ -1,55 +1,27 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
-import { useAuth } from '@/context/AuthContext';
-import api from '@/lib/api';
+import ReserveButton from '@/components/events/ReserveButton';
 import { Event } from '@/types/event';
 
-export default function EventDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const { user } = useAuth();
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [reserving, setReserving] = useState(false);
+async function getEvent(id: string): Promise<Event | null> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const response = await fetch(`${baseUrl}/events/published/${id}`, {
+    cache: 'no-store',
+  });
 
-  useEffect(() => {
-    fetchEvent();
-  }, [params.id]);
+  if (!response.ok) {
+    return null;
+  }
 
-  const fetchEvent = async () => {
-    try {
-      const { data } = await api.get(`/events/${params.id}`);
-      setEvent(data);
-    } catch (error) {
-      console.error('Error fetching event:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  return response.json();
+}
 
-  const handleReserve = async () => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+export default async function EventDetailPage({ params }: { params: { id: string } }) {
+  const event = await getEvent(params.id);
 
-    setReserving(true);
-    try {
-      await api.post('/reservations', { eventId: params.id });
-      alert('Réservation créée avec succès ! En attente de confirmation.');
-      router.push('/reservations');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de la réservation');
-    } finally {
-      setReserving(false);
-    }
-  };
-
-  if (loading) return <div>Chargement...</div>;
-  if (!event) return <div>Événement non trouvé</div>;
+  if (!event) {
+    return notFound();
+  }
 
   const availableSeats = event.capacity - event.reservedSeats;
   const startDate = new Date(event.startDate);
@@ -90,24 +62,20 @@ export default function EventDetailPage() {
               <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
             </div>
 
-            {event.status === 'published' && availableSeats > 0 && (
-              <button
-                onClick={handleReserve}
-                disabled={reserving}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {reserving ? 'Réservation en cours...' : 'Réserver ma place'}
-              </button>
-            )}
+            <ReserveButton
+              eventId={event.id}
+              status={event.status}
+              availableSeats={availableSeats}
+            />
 
             {availableSeats === 0 && (
-              <div className="bg-red-100 text-red-700 p-4 rounded">
+              <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
                 Complet - Plus de places disponibles
               </div>
             )}
 
             {event.status === 'cancelled' && (
-              <div className="bg-orange-100 text-orange-700 p-4 rounded">
+              <div className="bg-orange-100 text-orange-700 p-4 rounded mt-4">
                 Cet événement a été annulé
               </div>
             )}

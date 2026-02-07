@@ -7,6 +7,14 @@ import Navbar from '@/components/Navbar';
 import api from '@/lib/api';
 import { CreateEventDto, EventStatus } from '@/types/event';
 
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function CreateEventPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -27,8 +35,9 @@ export default function CreateEventPage() {
     try {
       await api.post('/events', formData);
       router.push('/admin/events');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de la création');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || 'Erreur lors de la création');
     } finally {
       setLoading(false);
     }

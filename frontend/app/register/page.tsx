@@ -5,6 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     email: '',
@@ -29,8 +37,9 @@ export default function RegisterPage() {
     try {
       await register(formData);
       router.push('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Échec de l\'inscription');
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      setError(apiError.response?.data?.message || "Échec de l'inscription");
     } finally {
       setLoading(false);
     }

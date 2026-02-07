@@ -33,6 +33,7 @@ export default function AdminEventsPage() {
       await api.delete(`/events/${id}`);
       setEvents(events.filter(e => e.id !== id));
     } catch (error) {
+      console.error('Error deleting event:', error);
       alert('Erreur lors de la suppression');
     }
   };
@@ -42,6 +43,7 @@ export default function AdminEventsPage() {
       await api.patch(`/events/${id}/publish`);
       fetchEvents();
     } catch (error) {
+      console.error('Error publishing event:', error);
       alert('Erreur lors de la publication');
     }
   };
@@ -51,7 +53,8 @@ export default function AdminEventsPage() {
       await api.patch(`/events/${id}/cancel`);
       fetchEvents();
     } catch (error) {
-      alert('Erreur lors de l\'annulation');
+      console.error('Error cancelling event:', error);
+      alert("Erreur lors de l'annulation");
     }
   };
 

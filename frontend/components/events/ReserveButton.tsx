@@ -6,6 +6,14 @@ import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
 import { EventStatus } from '@/types/event';
 
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 interface ReserveButtonProps {
   eventId: string;
   status: EventStatus | string;
@@ -32,8 +40,9 @@ export default function ReserveButton({ eventId, status, availableSeats }: Reser
       await api.post('/reservations', { eventId });
       alert('Réservation créée avec succès ! En attente de confirmation.');
       router.push('/reservations');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de la réservation');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || 'Erreur lors de la réservation');
     } finally {
       setReserving(false);
     }

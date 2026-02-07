@@ -5,7 +5,6 @@ import { Reservation, ReservationStatus } from './entities/reservation.entity';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { Event, EventStatus } from '../events/entities/event.entity';
 import { User, UserRole } from '../users/entities/user.entity';
-import PDFDocument from 'pdfkit';
 
 @Injectable()
 export class ReservationsService {
@@ -169,32 +168,60 @@ export class ReservationsService {
     }
 
     const event = reservation.event;
-    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+    const lines = [
+      'Ticket de réservation',
+      `ID réservation: ${reservation.id}`,
+      `Participant: ${reservation.user?.firstName ?? ''} ${reservation.user?.lastName ?? ''}`.trim(),
+      `Événement: ${event?.title ?? ''}`,
+    ];
 
-    const chunks: Buffer[] = [];
-    doc.on('data', (chunk) => chunks.push(chunk));
-
-    doc.fontSize(22).text('Ticket de réservation', { align: 'center' });
-    doc.moveDown();
-
-    doc.fontSize(12);
-    doc.text(`ID réservation: ${reservation.id}`);
-    doc.text(`Participant: ${reservation.user?.firstName ?? ''} ${reservation.user?.lastName ?? ''}`.trim());
-    doc.text(`Événement: ${event?.title ?? ''}`);
     if (event) {
-      doc.text(`Lieu: ${event.location}`);
-      doc.text(`Début: ${new Date(event.startDate).toLocaleString('fr-FR')}`);
-      doc.text(`Fin: ${new Date(event.endDate).toLocaleString('fr-FR')}`);
+      lines.push(`Lieu: ${event.location}`);
+      lines.push(`Début: ${new Date(event.startDate).toLocaleString('fr-FR')}`);
+      lines.push(`Fin: ${new Date(event.endDate).toLocaleString('fr-FR')}`);
     }
 
-    doc.moveDown();
-    doc.text('Merci pour votre réservation.', { align: 'center' });
+    lines.push('Merci pour votre réservation.');
 
-    doc.end();
+    return this.buildPdf(lines);
+  }
 
-    return await new Promise<Buffer>((resolve) => {
-      doc.on('end', () => resolve(Buffer.concat(chunks)));
+  private buildPdf(lines: string[]): Buffer {
+    const escapePdfText = (text: string) =>
+      text.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+
+    const contentLines = lines.map((line) => `(${escapePdfText(line)}) Tj\nT*`).join('\n');
+    const content = `BT\n/F1 12 Tf\n50 750 Td\n12 TL\n${contentLines}\nET`;
+
+    const objects = [
+      '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj',
+      '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj',
+      '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj',
+      `4 0 obj\n<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}\nendstream\nendobj`,
+      '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj',
+    ];
+
+    let pdf = '%PDF-1.4\n';
+    const offsets: number[] = [0];
+
+    objects.forEach((obj) => {
+      offsets.push(Buffer.byteLength(pdf));
+      pdf += `${obj}\n`;
     });
+
+    const xrefStart = Buffer.byteLength(pdf);
+    let xref = 'xref\n0 6\n';
+    xref += '0000000000 65535 f \n';
+
+    for (let i = 1; i < offsets.length; i += 1) {
+      const offset = offsets[i].toString().padStart(10, '0');
+      xref += `${offset} 00000 n \n`;
+    }
+
+    const trailer = `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+    pdf += xref + trailer;
+
+    return Buffer.from(pdf);
   }
 
   async getAdminStats() {

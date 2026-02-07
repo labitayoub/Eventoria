@@ -6,6 +6,14 @@ import Navbar from '@/components/Navbar';
 import api from '@/lib/api';
 import { Reservation } from '@/types/reservation';
 
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function AdminReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,8 +37,9 @@ export default function AdminReservationsPage() {
     try {
       await api.patch(`/reservations/${id}/confirm`);
       fetchReservations();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de la confirmation');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || 'Erreur lors de la confirmation');
     }
   };
 
@@ -38,8 +47,9 @@ export default function AdminReservationsPage() {
     try {
       await api.patch(`/reservations/${id}/refuse`);
       fetchReservations();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors du refus');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || 'Erreur lors du refus');
     }
   };
 
@@ -49,8 +59,9 @@ export default function AdminReservationsPage() {
     try {
       await api.patch(`/reservations/${id}/cancel`);
       fetchReservations();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de l\'annulation');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || "Erreur lors de l'annulation");
     }
   };
 

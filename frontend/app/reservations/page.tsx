@@ -7,6 +7,14 @@ import api from '@/lib/api';
 import { Reservation } from '@/types/reservation';
 import Link from 'next/link';
 
+type ApiError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+};
+
 export default function MyReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,8 +40,9 @@ export default function MyReservationsPage() {
     try {
       await api.delete(`/reservations/${id}`);
       fetchReservations();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors de l\'annulation');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || "Erreur lors de l'annulation");
     }
   };
 
@@ -51,8 +60,9 @@ export default function MyReservationsPage() {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Erreur lors du téléchargement du ticket');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      alert(apiError.response?.data?.message || 'Erreur lors du téléchargement du ticket');
     }
   };
 
@@ -87,7 +97,7 @@ export default function MyReservationsPage() {
             <p>Chargement...</p>
           ) : reservations.length === 0 ? (
             <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-600 mb-4">Vous n'avez aucune réservation.</p>
+              <p className="text-gray-600 mb-4">Vous n&apos;avez aucune réservation.</p>
               <Link
                 href="/events"
                 className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"

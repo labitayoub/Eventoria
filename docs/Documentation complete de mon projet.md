@@ -81,9 +81,10 @@
 
 **Endpoints** :
 - `POST /events` - Créer (Admin)
-- `GET /events` - Liste tous
+- `GET /events` - Liste tous (Admin)
 - `GET /events/published` - Liste publiés
-- `GET /events/:id` - Détails
+- `GET /events/published/:id` - Détails publiés
+- `GET /events/:id` - Détails (Admin)
 - `PATCH /events/:id` - Modifier (Admin)
 - `DELETE /events/:id` - Supprimer (Admin)
 - `PATCH /events/:id/publish` - Publier (Admin)
@@ -117,10 +118,14 @@
 - `GET /reservations` - Liste toutes (Admin)
 - `GET /reservations/my-reservations` - Mes réservations
 - `GET /reservations/event/:eventId` - Par événement (Admin)
+- `GET /reservations/user/:userId` - Par participant (Admin)
+- `GET /reservations/stats` - Statistiques (Admin)
 - `GET /reservations/:id` - Détails
 - `PATCH /reservations/:id/confirm` - Confirmer (Admin)
 - `PATCH /reservations/:id/refuse` - Refuser (Admin)
+- `PATCH /reservations/:id/cancel` - Annuler (Admin)
 - `DELETE /reservations/:id` - Annuler (User)
+- `GET /reservations/:id/ticket` - Télécharger ticket PDF (Confirmée)
 
 #### DatabaseModule
 **Fichiers** :
@@ -178,6 +183,7 @@
 - Liste des réservations de l'utilisateur
 - Statuts avec badges colorés
 - Bouton annuler
+- Téléchargement du ticket PDF si confirmé
 - Protection par ProtectedRoute
 
 ### 3. Pages admin
@@ -195,15 +201,16 @@
 - Protection par AdminRoute
 
 #### `/admin/events/[id]/edit` - Modifier événement
-- Formulaire pré-rempli
-- Mise à jour
-- Protection par AdminRoute
+- Non implémenté (lien présent, page à créer)
 
 #### `/admin/reservations` - Gestion réservations
 - Tableau avec toutes les réservations
 - Informations participant + événement
-- Actions : Confirmer, Refuser
+- Actions : Confirmer, Refuser, Annuler
 - Protection par AdminRoute
+
+#### `/admin` - Dashboard admin
+- Indicateurs : événements à venir, taux de remplissage, réservations par statut
 
 ### 4. Composants
 
@@ -265,6 +272,11 @@ User: { id, email, firstName, lastName, role }
 - Instance axios configurée
 - Base URL : http://localhost:3001
 - Intercepteur pour JWT automatique
+
+#### Tests Front-end
+- Jest + React Testing Library
+- Config : `jest.config.js` + `jest.setup.ts`
+- Commande : `npm test`
 
 ---
 
@@ -357,6 +369,7 @@ updatedAt       timestamp
 9. Confirme la réservation
 10. Places réservées incrémentées
 11. User voit statut CONFIRMED
+12. User télécharge le ticket PDF depuis `/reservations`
 
 ### Flux création événement
 1. Admin va sur `/admin/events`
@@ -366,6 +379,11 @@ updatedAt       timestamp
 5. Backend crée événement
 6. Redirection vers liste
 7. Admin peut publier si draft
+
+### Flux dashboard admin
+1. Admin ouvre `/admin`
+2. Chargement des statistiques via `/reservations/stats`
+3. Affichage : événements à venir, taux de remplissage, répartition par statut
 
 ---
 
@@ -380,11 +398,12 @@ updatedAt       timestamp
 - **2 stratégies** Passport
 
 ### Frontend
-- **12 pages** (publiques + authentifiées + admin)
-- **4 composants** réutilisables
+- **Pages** : publiques, authentifiées, admin
+- **Composants** : Navbar, EventCard, ProtectedRoute, AdminRoute, ReserveButton
 - **1 context** global (Auth)
 - **3 types** TypeScript
 - **Protection** routes par HOC
+- **Tests** : RTL (composant + flux)
 
 ### Base de données
 - **3 tables** avec relations
@@ -398,6 +417,52 @@ updatedAt       timestamp
 
 ### Backend
 - NestJS 11
+
+### Frontend
+- Next.js 16 + TypeScript
+- Tailwind CSS 4
+- Axios
+
+### Tests
+- Jest
+- React Testing Library
+
+---
+
+## 🐳 Docker & Docker Compose
+
+### Images
+- Backend : `backend/Dockerfile`
+- Frontend : `frontend/Dockerfile`
+- Database : `postgres:16-alpine`
+
+### docker-compose.yml
+- Services : `postgres`, `backend`, `frontend`
+- Réseau : `eventoria-network`
+- Variables d’environnement gérées via `DATABASE_URL`, `JWT_SECRET`, `NEXT_PUBLIC_API_URL`
+
+### Variables d’environnement
+- Backend : [backend/.env.example](backend/.env.example)
+- Frontend : [frontend/.env.example](frontend/.env.example)
+
+---
+
+## 🔁 CI/CD (GitHub Actions)
+
+### Workflow
+Fichier : [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml)
+
+### Déclencheurs
+- `push` et `pull_request` sur `main` et `master`
+
+### Jobs
+- **backend-test** : install, lint, tests unitaires, e2e
+- **frontend-test** : install, lint, build
+- **docker-build** : build & push images Docker Hub (push seulement)
+
+### Secrets requis
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
 - TypeScript 5.7
 - PostgreSQL 16
 - TypeORM 0.3

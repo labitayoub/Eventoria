@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: eventoria_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eventoria_user
+      POSTGRES_PASSWORD: eventoria_pass
+      POSTGRES_DB: eventoria_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventoria_user -d eventoria_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

@@ -1,22 +1,29 @@
+'use client';
+
 import { Event } from '@/types/event';
 import Navbar from '@/components/Navbar';
 import EventCard from '@/components/events/EventCard';
+import { useEffect, useState } from 'react';
+import api from '@/lib/api';
 
-async function getEvents(): Promise<Event[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const response = await fetch(`${baseUrl}/events/published`, {
-    cache: 'no-store',
-  });
+export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!response.ok) {
-    return [];
-  }
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const { data } = await api.get<Event[]>('/events/published');
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return response.json();
-}
-
-export default async function EventsPage() {
-  const events = await getEvents();
+    fetchEvents();
+  }, []);
 
   return (
     <>
@@ -25,7 +32,9 @@ export default async function EventsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 mb-8">Événements disponibles</h1>
           
-          {events.length === 0 ? (
+          {loading ? (
+            <p className="text-gray-500 text-sm">Chargement...</p>
+          ) : events.length === 0 ? (
             <p className="text-gray-500 text-sm">Aucun événement disponible pour le moment.</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

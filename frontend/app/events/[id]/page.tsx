@@ -1,26 +1,54 @@
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import ReserveButton from '@/components/events/ReserveButton';
 import { Event } from '@/types/event';
+import api from '@/lib/api';
 
-async function getEvent(id: string): Promise<Event | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const response = await fetch(`${baseUrl}/events/published/${id}`, {
-    cache: 'no-store',
-  });
+export default function EventDetailPage() {
+  const params = useParams();
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!response.ok) {
-    return null;
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const { data } = await api.get<Event>(`/events/published/${params.id}`);
+        setEvent(data);
+      } catch (error) {
+        console.error('Error fetching event:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchEvent();
+    }
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gray-50/50 flex items-center justify-center">
+          <p className="text-gray-500">Chargement...</p>
+        </div>
+      </>
+    );
   }
 
-  return response.json();
-}
-
-export default async function EventDetailPage({ params }: { params: { id: string } }) {
-  const event = await getEvent(params.id);
-
   if (!event) {
-    return notFound();
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gray-50/50 flex items-center justify-center">
+          <p className="text-gray-500">Événement non trouvé</p>
+        </div>
+      </>
+    );
   }
 
   const availableSeats = event.capacity - event.reservedSeats;

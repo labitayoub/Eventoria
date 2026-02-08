@@ -90,57 +90,72 @@ export default function MyReservationsPage() {
   return (
     <ProtectedRoute>
       <Navbar />
-      <div className="min-h-screen bg-gray-50/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 mb-8">Mes réservations</h1>
+      <div className="min-h-screen bg-slate-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-8">Mes réservations</h1>
 
           {loading ? (
-            <p className="text-sm text-gray-500">Chargement...</p>
+             <div className="flex justify-center items-center h-48">
+               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
+             </div>
           ) : reservations.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
-              <p className="text-gray-500 mb-5">Vous n&apos;avez aucune réservation.</p>
+            <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+              <div className="text-5xl mb-4">🎫</div>
+              <h3 className="text-lg font-medium text-slate-900 mb-2">Aucune réservation</h3>
+              <p className="text-slate-500 mb-8">Vous n&apos;avez pas encore réservé d&apos;événement.</p>
               <Link
                 href="/events"
-                className="inline-block bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Découvrir les événements
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {reservations.map((reservation) => (
-                <div key={reservation.id} className="bg-white rounded-xl border border-gray-200 p-5">
-                  <div className="flex justify-between items-start">
+                <div key={reservation.id} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-md transition-shadow">
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                     <div className="flex-1">
-                      <h3 className="text-base font-semibold text-gray-900 mb-1.5">
+                      <h3 className="text-lg font-bold text-slate-900 mb-2">
                         {reservation.event?.title}
                       </h3>
-                      <div className="space-y-1 text-sm text-gray-500">
-                        <p>📍 {reservation.event?.location}</p>
-                        <p>📅 {new Date(reservation.event?.startDate || '').toLocaleDateString('fr-FR')}</p>
-                        <p>🕐 Réservé le {new Date(reservation.createdAt).toLocaleDateString('fr-FR')}</p>
+                      <div className="space-y-1.5 text-sm text-slate-600">
+                        <div className="flex items-center">
+                          <span className="w-5 text-indigo-500">📍</span>
+                           {reservation.event?.location}
+                        </div>
+                        <div className="flex items-center">
+                          <span className="w-5 text-indigo-500">📅</span>
+                          {new Date(reservation.event?.startDate || '').toLocaleDateString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })}
+                        </div>
+                        <div className="flex items-center text-slate-400 text-xs mt-2">
+                          Réservé le {new Date(reservation.createdAt).toLocaleDateString('fr-FR')}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right space-y-2">
-                      <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(reservation.status)}`}>
+                    <div className="flex flex-row md:flex-col items-center md:items-end gap-3 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-0 border-slate-100">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(reservation.status)}`}>
                         {getStatusText(reservation.status)}
                       </span>
-                      {reservation.status === 'confirmed' && (
-                        <button
-                          onClick={() => handleDownloadTicket(reservation.id)}
-                          className="block w-full text-blue-600 hover:text-blue-800 text-sm font-medium"
-                        >
-                          Télécharger le ticket PDF
-                        </button>
-                      )}
-                      {(reservation.status === 'pending' || reservation.status === 'confirmed') && (
-                        <button
-                          onClick={() => handleCancel(reservation.id)}
-                          className="block w-full text-red-600 hover:text-red-800 text-sm font-medium"
-                        >
-                          Annuler
-                        </button>
-                      )}
+                      
+                      <div className="flex gap-2">
+                        {reservation.status === 'confirmed' && (
+                          <button
+                            onClick={() => handleDownloadTicket(reservation.id)}
+                            className="inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-xs font-medium rounded text-slate-700 bg-white hover:bg-slate-50 focus:outline-none"
+                          >
+                            ⬇️ Ticket
+                          </button>
+                        )}
+                        {(reservation.status === 'pending' || reservation.status === 'confirmed') && (
+                          <button
+                            onClick={() => handleCancel(reservation.id)}
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none"
+                          >
+                            Annuler
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

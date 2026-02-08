@@ -30,36 +30,36 @@ export default async function EventDetailPage({ params }: { params: { id: string
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 py-12">
-          <div className="bg-white rounded-lg shadow p-8">
-            <h1 className="text-4xl font-bold mb-4">{event.title}</h1>
+      <div className="min-h-screen bg-gray-50/50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+            <h1 className="text-2xl font-semibold tracking-tight text-gray-900 mb-6">{event.title}</h1>
             
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center text-gray-700">
-                <span className="font-semibold w-32">📍 Lieu :</span>
+            <div className="space-y-3 mb-8">
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="font-medium text-gray-900 w-28">📍 Lieu</span>
                 <span>{event.location}</span>
               </div>
               
-              <div className="flex items-center text-gray-700">
-                <span className="font-semibold w-32">📅 Début :</span>
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="font-medium text-gray-900 w-28">📅 Début</span>
                 <span>{startDate.toLocaleString('fr-FR')}</span>
               </div>
               
-              <div className="flex items-center text-gray-700">
-                <span className="font-semibold w-32">🕐 Fin :</span>
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="font-medium text-gray-900 w-28">🕐 Fin</span>
                 <span>{endDate.toLocaleString('fr-FR')}</span>
               </div>
               
-              <div className="flex items-center text-gray-700">
-                <span className="font-semibold w-32">👥 Places :</span>
+              <div className="flex items-center text-sm text-gray-600">
+                <span className="font-medium text-gray-900 w-28">👥 Places</span>
                 <span>{availableSeats} / {event.capacity} disponibles</span>
               </div>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Description</h2>
-              <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
+              <h2 className="text-lg font-semibold text-gray-900 mb-3">Description</h2>
+              <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{event.description}</p>
             </div>
 
             <ReserveButton
@@ -69,13 +69,13 @@ export default async function EventDetailPage({ params }: { params: { id: string
             />
 
             {availableSeats === 0 && (
-              <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
-                Complet - Plus de places disponibles
+              <div className="bg-red-50 text-red-600 p-4 rounded-lg text-sm mt-4">
+                Complet — Plus de places disponibles
               </div>
             )}
 
             {event.status === 'cancelled' && (
-              <div className="bg-orange-100 text-orange-700 p-4 rounded mt-4">
+              <div className="bg-amber-50 text-amber-700 p-4 rounded-lg text-sm mt-4">
                 Cet événement a été annulé
               </div>
             )}

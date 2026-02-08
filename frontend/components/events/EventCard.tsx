@@ -10,11 +10,11 @@ export default function EventCard({ event }: { event: Event }) {
   });
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
-      <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-      <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+    <div className="bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-md transition-all duration-200">
+      <h3 className="text-base font-semibold text-gray-900 mb-1.5">{event.title}</h3>
+      <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">{event.description}</p>
       
-      <div className="space-y-2 text-sm text-gray-700 mb-4">
+      <div className="space-y-1.5 text-sm text-gray-600 mb-5">
         <p>📍 {event.location}</p>
         <p>📅 {startDate}</p>
         <p>👥 {availableSeats} places disponibles</p>
@@ -22,7 +22,7 @@ export default function EventCard({ event }: { event: Event }) {
 
       <Link
         href={`/events/${event.id}`}
-        className="block w-full text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        className="block w-full text-center bg-gray-900 text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
       >
         Voir détails
       </Link>

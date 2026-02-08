@@ -14,42 +14,42 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow">
+    <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-14">
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-blue-600">
+            <Link href="/" className="text-lg font-semibold tracking-tight text-gray-900">
               Eventoria
             </Link>
-            <div className="ml-10 flex space-x-4">
-              <Link href="/events" className="text-gray-700 hover:text-blue-600">
+            <div className="ml-8 flex space-x-1">
+              <Link href="/events" className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-50 transition-colors">
                 Événements
               </Link>
               {user && (
-                <Link href="/reservations" className="text-gray-700 hover:text-blue-600">
+                <Link href="/reservations" className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-50 transition-colors">
                   Mes réservations
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {user ? (
               <>
-                <span className="text-sm text-gray-700">
+                <span className="text-sm text-gray-500 font-medium">
                   {user.firstName} {user.lastName}
                 </span>
                 {user.role === 'admin' && (
-                  <div className="flex gap-2">
+                  <div className="flex gap-1 border-l border-gray-200 pl-3 ml-1">
                     <Link
                       href="/admin/events"
-                      className="text-sm text-blue-600 hover:underline"
+                      className="px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                     >
                       Événements
                     </Link>
                     <Link
                       href="/admin/reservations"
-                      className="text-sm text-blue-600 hover:underline"
+                      className="px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                     >
                       Réservations
                     </Link>
@@ -57,7 +57,7 @@ export default function Navbar() {
                 )}
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-100 transition-colors"
                 >
                   Déconnexion
                 </button>
@@ -66,13 +66,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-sm text-blue-600 hover:underline"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-3.5 py-1.5 text-sm font-medium bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
                 >
                   Inscription
                 </Link>

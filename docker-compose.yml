@@ -48,5 +48,14 @@ services:
       - backend
     restart: unless-stopped
 
+  adminer:
+    image: adminer:latest
+    container_name: eventoria-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
 volumes:
   postgres_data:
